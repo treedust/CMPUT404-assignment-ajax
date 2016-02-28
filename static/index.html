@@ -43,7 +43,7 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
                     callback(JSON.parse(xhr.responseText));
                 }
             } catch(e) {
-                alert('Error: ' + e.name);
+                alert('Error: ' + e.name + callback);
             }
         }
     };
@@ -69,14 +69,19 @@ world = {};
 function drawCircle(context,entity) {
     with(context) {
         beginPath();              
-        lineWidth = 3;
+        lineWidth = 4;
         var x = entity["x"];
         var y = entity["y"];
         //moveTo(x,y);
         fillStyle = entity["colour"];
         strokeStyle = fillStyle;
-        arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
-        stroke();                                
+        arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, true);  
+        //stroke();      
+        if (entity["radius"] == 20) {
+            stroke();
+        } else {                      
+            fill();
+        }
     }
 }
 
@@ -258,23 +263,25 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+    addEntityWithoutName({'x':x,'y':y,'colour':'blue','radius':20});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'red'});
+    addEntityWithoutName({'x':x,'y':y,'colour':'red','radius':20});
 });
 
+//each person could have a different colour they draw with 
+mycolour = ['green','yellow','orange','pink','purple','cyan'][Math.floor(Math.random() * 6)];
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'green',
+    addEntityWithoutName({'x':x,'y':y,'colour':mycolour,
                           'radius':10});
 });
 
 
 function update() {
     //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
-    sendJSONXMLHTTPRequest("/world",null, function(worldData) {
-    	world = worlData;
+    sendJSONXMLHTTPRequest("/world",null, function(worldData){
+    	world = worldData;
     	drawNextFrame();
     } );
     drawFrame();
