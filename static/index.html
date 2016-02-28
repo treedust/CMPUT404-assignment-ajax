@@ -40,9 +40,9 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
                 if (xhr.status==200) {
                     //XXX: parse some JSON from the request!
                     //XXX: Pass the data to the callback!
+                    callback(JSON.parse(xhr.responseText));
                 }
-            } 
-            catch(e) {
+            } catch(e) {
                 alert('Error: ' + e.name);
             }
         }
@@ -50,6 +50,16 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
     //XXX: POST to a URL
     //XXX: set the mimetype and the accept headers!
     // Remember to use application/json !
+    xhr.open('POST',url,true);
+    //mimetype
+    xhr.setRequestHeader("Content-type","application/json")
+    //accept 
+    xhr.setRequestHeader("Accept","application/json")
+    if (objects != null) {
+    	xhr.send(JSON.stringify(objects));
+    } else {
+    	xhr.send(null);
+    }
 }
 
 
@@ -138,6 +148,7 @@ function addEntity(entity, data) {
     world[entity] = data;
     drawNextFrame(); // (but should we?)
     //XXX: Send a XHTML Request that updates the entity you just  modified!
+    sendJSONXMLHTTPRequest("/entity/"+encodeURIComponent(entity), data, function(){} );
 
 }
 
@@ -262,6 +273,10 @@ mouse.mousedraggers.push(function(x,y,clicked,e) {
 
 function update() {
     //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
+    sendJSONXMLHTTPRequest("/world",null, function(worldData) {
+    	world = worlData;
+    	drawNextFrame();
+    } );
     drawFrame();
 }
 
