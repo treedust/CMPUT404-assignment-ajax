@@ -270,10 +270,8 @@ mouse.mouseuppers.push(function(x,y,clicked,e) {
     addEntityWithoutName({'x':x,'y':y,'colour':'red','radius':20});
 });
 
-//each person could have a different colour they draw with 
-mycolour = ['green','yellow','orange','pink','purple','cyan'][Math.floor(Math.random() * 6)];
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':mycolour,
+    addEntityWithoutName({'x':x,'y':y,'colour':['green','yellow','orange','pink','purple','cyan'][Math.floor(Math.random() * 6)],
                           'radius':10});
 });
 
